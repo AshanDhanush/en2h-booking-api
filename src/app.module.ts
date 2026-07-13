@@ -5,11 +5,12 @@ import { User } from './database/entities/user.entity';
 import { Service } from './database/entities/service.entity';
 import { Booking } from './database/entities/bookings.entity';
 import { AuthModule } from './auth/auth.module';
+import { ServicesModule } from './services/services.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -25,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     AuthModule,
+    ServicesModule,
+    BookingsModule,
   ],
 })
 export class AppModule {}

@@ -14,7 +14,12 @@ import {
   RefreshTokenDto,
   UpdatePasswordDto,
 } from './dto/auth.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { User } from '../database/entities/user.entity';
@@ -22,7 +27,7 @@ import { User } from '../database/entities/user.entity';
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -53,9 +58,10 @@ export class AuthController {
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     return this.authService.refreshTokens(refreshTokenDto);
   }
+
   @Patch('update-password')
-  @UseGuards(JwtAuthGuard) 
-  @ApiBearerAuth() 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update password (authenticated)' })
   @ApiResponse({ status: 200, description: 'Password updated successfully' })
@@ -64,10 +70,7 @@ export class AuthController {
     description: 'Passwords do not match or same as current',
   })
   @ApiResponse({ status: 401, description: 'Current password incorrect' })
-  updatePassword(
-    @CurrentUser() user: User, // ← gets logged in user from JWT
-    @Body() dto: UpdatePasswordDto, // ← gets request body
-  ) {
+  updatePassword(@CurrentUser() user: User, @Body() dto: UpdatePasswordDto) {
     return this.authService.updatePassword(user.id, dto);
   }
 }
